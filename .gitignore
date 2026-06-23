@@ -1,0 +1,9 @@
+__pycach__/
+
+.venv/
+venv/
+.env
+*.env
+
+# created databases
+*.db
