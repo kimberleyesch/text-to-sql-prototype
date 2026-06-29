@@ -51,18 +51,22 @@ def execute_query(sql_query):
 
     if not sql_query.strip().lower().startswith("select"):
         raise ValueError("Only SELECT queries are allowed.")
-        #TODO hier später noch hinzufügen welche Fragenummer das war
+        #TODO add question-number
     
     connection = get_connection()
 
     try:
         cursor = connection.cursor()
         cursor.execute(sql_query.strip())
+
+        column_names = [desc[0] for desc in cursor.description]
+
         results = cursor.fetchall()
 
-        connection.close()
-        return results
+        return column_names, results
     
     except sqlite3.Error as e:
-        connection.close()
         raise RuntimeError(f"SQL error occurred: {e}")
+    
+    finally:
+        connection.close()
