@@ -1,4 +1,5 @@
 __pycach__/
+*.py[cod]
 
 .venv/
 venv/
