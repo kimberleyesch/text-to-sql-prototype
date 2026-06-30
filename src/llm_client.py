@@ -3,23 +3,45 @@ from google import genai
 from dotenv import load_dotenv
 from pathlib import Path
 
-"""GET API Key from .env"""
-PROJ_ROOT = Path(__file__).resolve().parent.parent
-dotenv_path = PROJ_ROOT.resolve()
-load_dotenv(dotenv_path=dotenv_path)
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+def get_api():
+    """GET API Key from .env"""
+    PROJ_ROOT = Path(__file__).resolve().parent.parent
+    dotenv_path = PROJ_ROOT.resolve()
+    load_dotenv(dotenv_path=dotenv_path)
+    GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
-client = genai.Client(api_key=GEMINI_API_KEY)
-
-interaction = client.interactions.create(
-    model="gemini-3.5-flash",
-    input="How does one select all columns in a SQLite database from a customers table? Reply only with the SQL query"
-)
-print(interaction.output_text)
-
-# def generate_sql(prompt):T
-#     """Send prompt to LLM and return the generated SQL query"""
+    if not GEMINI_API_KEY:
+        raise ValueError("Gemini API Key was not found in the environment.")
     
-#     sql_query = "SELECT company_name, company_size FROM customers WHERE company_size = 'medium'"
+    return GEMINI_API_KEY
+
+def clean_sql_response(response_query):
+    """Remove Markdown fences form LLM response."""
+    sql_query = response_query.strip()
+
+    sql_query = (
+        sql_query
+        .removeprefix("```sql")
+        .removeprefix("```sqlite")
+        .removesuffix("```")
+        .strip()
+    )
+
+    return sql_query
+
+def generate_sql(prompt):
+    """Send prompt to LLM and return the generated SQL query"""
+
+    GEMINI_API_KEY = get_api()
+    client = genai.Client(api_key=GEMINI_API_KEY)
+
+    interaction = client.interactions.create(
+        model="gemini-3.5-flash",
+        input=prompt
+    )
     
-#     return sql_query
+    sql_response = interaction.output_text
+
+    sql_query = clean_sql_response(sql_response)
+
+    return sql_query
