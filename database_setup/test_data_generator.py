@@ -2,10 +2,6 @@ import random
 import pandas as pd
 from faker import Faker
 
-
-# -----------------------------------------------------------------------------------------
-# Constants
-
 #TODO ------------ FUNTKIONIEREN DIe überhaupt als Begrenzung? ich glaube nicht
 DEFAULT_CUSTOMER_COUNT = 20
 DEFAULT_PRODUCT_COUNT = 230  # max: 230
@@ -53,8 +49,11 @@ PRODUCTS_URL = "https://huggingface.co/api/resolve-cache/datasets/crawlfeeds/Hom
 
 # -----------------------------------------------------------------------------------------
 # Read data from urls
+# -----------------------------------------------------------------------------------------
 
 def read_location_data():
+    """Reads data for locations."""
+
     required_columns = {"name", "country"}
 
     try:
@@ -68,6 +67,8 @@ def read_location_data():
     return location_data
 
 def read_product_data():
+    """Reads data for products."""
+
     required_columns = {"product_name", "price", "category_4"}
     
     try:
@@ -80,13 +81,12 @@ def read_product_data():
 
     return product_data
 
-
 # -----------------------------------------------------------------------------------------
-# create test data
+# Create test data
+# -----------------------------------------------------------------------------------------
 
-# creats customer test data
-# return: test data in pandas data frame
 def create_customers():
+    """Creates synthetic customer data."""
 
     fake = Faker("en_US")
 
@@ -97,7 +97,6 @@ def create_customers():
     random_locations = location_data.sample(n=DEFAULT_CUSTOMER_COUNT)
     cities = random_locations["name"].tolist()
     countries = random_locations["country"].tolist()
-
     
     # create customer table
     customers = pd.DataFrame({
@@ -113,11 +112,9 @@ def create_customers():
 
     return customers
 
-
-
-# creats categories test data
-# return: test data in pandas data frame
 def create_categories():
+    """Creates synthetic category data."""
+
     product_data = read_product_data()
 
     unique_categories = (product_data["category_4"].dropna().drop_duplicates().reset_index(drop=True))
@@ -130,10 +127,9 @@ def create_categories():
 
     return categories
 
-
-# creats products test data
-# return: test data in pandas data frame
 def create_products(categories):
+    """Creates synthetic product data."""
+
     product_data = read_product_data()
 
     categories_mapping = dict(zip(categories["category_name"], categories["category_id"]))
@@ -165,10 +161,9 @@ def create_products(categories):
 
     return products
 
-
-# creats orders test data
-# return: test data in pandas data frame
 def create_orders(customers):
+    """Creates synthetic order data."""
+
     fake = Faker("en_US")
 
     selected_customer_ids = [random.choice(customers["customer_id"]) for _ in range(DEFAULT_ORDERS_COUNT)]
@@ -184,9 +179,9 @@ def create_orders(customers):
 
     return orders
 
-# creats order_items test data
-# return: test data in pandas data frame
 def create_order_items(orders, products):
+    """Creates synthetic order item data."""
+
     order_items_data = []
 
     for order_id in orders["order_id"]:
@@ -210,10 +205,9 @@ def create_order_items(orders, products):
 
     return order_items
 
-
-# -----------------------------------------------------------------------------------------
-# create all test data
 def create_test_data():
+    """Creates and returns all related test data."""
+
     customers = create_customers()
     categories = create_categories()
     products = create_products(categories)
@@ -228,7 +222,6 @@ def create_test_data():
         "orders": orders,
         "order_items": order_items,
     }
-
 
 def main():
     test_data = create_test_data()
