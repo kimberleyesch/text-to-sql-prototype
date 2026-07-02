@@ -7,7 +7,7 @@ from pathlib import Path
 # -----------------------------------------------------------------------------------------
 # Constants
 
-DATABASE_PATH = Path("business.db")
+DATABASE_PATH = Path(__file__).resolve().parent / "business.db"
 
 INSERT_ORDER = [
     "customers",

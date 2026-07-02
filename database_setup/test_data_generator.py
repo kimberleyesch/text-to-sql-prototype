@@ -3,7 +3,7 @@ import pandas as pd
 from faker import Faker
 
 #TODO ------------ FUNTKIONIEREN DIe überhaupt als Begrenzung? ich glaube nicht
-DEFAULT_CUSTOMER_COUNT = 20
+DEFAULT_CUSTOMER_COUNT = 100
 DEFAULT_PRODUCT_COUNT = 230  # max: 230
 DEFAULT_ORDERS_COUNT = 100
 MAX_ITEMS_PER_ORDER= 15
