@@ -15,22 +15,27 @@ def main():
     schema = get_schema()
     questions, question_ids = get_questions()
 
-    for i in range(3):
-        question_id = question_ids[i]
-        question = questions[i]
+    i=3
+    question_id = question_ids[i]
+    question = questions[i]
     # for question_id, question in zip(question_ids, questions):
 
-        prompt = build_prompt(question, schema)
-        sql_query = generate_sql(prompt)
-        column_names, results = execute_query(sql_query)
-        save_result(question_id, column_names, results)
+    prompt = build_prompt(question, schema)
+    sql_query = generate_sql(prompt)
+    column_names, results = execute_query(sql_query)
+    save_result(question_id, column_names, results, sql_query)
+    
+    print("\n")
+    print("-"*60)
+    print(f"Question {question_id}: {question}\n")
+    print(f"Generated SQL-Query: {sql_query}")
+    print("\n")
+    print("Result:")
+    print(" | ".join(column_names))
+    print("-"*40)
 
-        print(f"\nQuestion: {question}")
-        print("\n")
-        print(" | ".join(column_names))
-
-        for row in results:
-            print(row)
+    for row in results:
+        print(" | ".join(row))
 
 if __name__ == "__main__":
     main()

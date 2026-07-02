@@ -20,8 +20,7 @@ def get_questions():
 
     return questions, question_ids
 
-
-def save_result(question_id, column_names, results):
+def save_result(question_id, column_names, results, sql_query):
     """Save the query result in new CSV file"""
 
     RESULTS_PATH.mkdir(exist_ok=True)
@@ -30,11 +29,15 @@ def save_result(question_id, column_names, results):
         results,
         columns=column_names
     )
+    df.insert(0, "Generated SQL-Query", "")
+    df.loc[0, "Generated SQL-Query"] = sql_query.replace("\n", " ")
 
     path_name = get_next_result_path(question_id)
 
-    df.to_csv(path_name, index=False, sep=";")
-
+    df.to_csv(path_name,
+              index=False,
+              sep=";",
+              encoding="utf-8")
 
 def get_next_result_path(id):
     """Return the next available file path name for the question"""
@@ -47,14 +50,3 @@ def get_next_result_path(id):
         path_name = RESULTS_PATH / f"{id}_result_{counter}.csv"
         
     return path_name
-
-
-def main():
-    id = 'Q01'
-    col = ['company_name', 'country']
-    #col.insert(0, "id")
-    list = [('Kirk-Hunter', 'Japan'), ('Nguyen-Burton', 'France'), ('Bush, Brown and Lawrence', 'China'), ('Williams-Lester', 'Chile'), ('Peterson Inc', 'China'), ('Klein, Schmitt and Johnson', 'Colombia'), ('Hancock-Carson', 'India'), ('Fitzpatrick-Walker', 'Canada'), ('Lambert Inc', 'United Kingdom'), ('Martin-Warren', 'Italy'), ('Love-Harris', 'India'), ('Perry-Thompson', 'Brazil')]
-    save_result(id, col, list)
-
-if __name__ == "__main__":
-    main()
