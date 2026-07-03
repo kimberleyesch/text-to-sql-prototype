@@ -1,0 +1,5 @@
+Title: Historical Reporting Ruels
+
+Content:
+Only orders with the status “completed” are included in historical revenue, COGS, gross profit and gross profit margin calculations.
+The monetary values are stored in cents. Unless explicitly requested in cents, monetary results are expressed in euros. 

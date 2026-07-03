@@ -1,0 +1,12 @@
+Title: Historical Revenue and Profit Calculation Rules
+
+Content:
+Historical calculations use the selling price and unit costs at the time an order was placed. Current product prices and costs are not used.
+
+Gross revenue is calculated by multiplying the ordered quantity by the historical unit selling price before discount.
+Net revenue is calculated by applying the recorded discount to the historical unit selling price and multiplying the result by the ordered quantity.
+Cost of Goods Sold (COGS) is calculated by multiplying the ordered quantity by the historical unit cost.
+Gross profit is calculated as net revenue minus Cost of Goods Sold.
+Gross profit margin is calculated as gross profit devided by net revenue, multiplied by 100.
+
+If net revenue is zero, the gross profit margin is undefined.

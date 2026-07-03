@@ -1,0 +1,12 @@
+Title: Current Product Metrics
+
+Content:
+Current metrics are calculated exclusively using the current selling prices and current unit costs stored for each product.
+Current calculations do not use orders, order items, historical prices, discounts or order statuses.
+
+The current unit price is the current selling price of a product.
+The current unit cost is the current selling cost of a product.
+The current gross profit per unit is calculated as the current unit selling price minus the current unit cost.
+The current gross profit margin is calculated as current gross profit per unit divided by the current unit selling price, multiplied by 100.
+
+If the current unit price is zero, the Current Gross Profit Margin is undefined.
