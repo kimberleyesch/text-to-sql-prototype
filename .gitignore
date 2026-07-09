@@ -6,10 +6,16 @@ venv/
 .env
 *.env
 
-# created databases
+# databases
 *.db
+
+# chromadb
+*.sqlite3
 
 # test questions and results
 *.csv
 *.xlsx
 results/
+
+# binaries
+*.bin
