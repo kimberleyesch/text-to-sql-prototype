@@ -2,18 +2,10 @@ import random
 import pandas as pd
 from faker import Faker
 
-#TODO ------------ FUNTKIONIEREN DIe überhaupt als Begrenzung? ich glaube nicht
-DEFAULT_CUSTOMER_COUNT = 100
-DEFAULT_PRODUCT_COUNT = 230  # max: 230
-DEFAULT_ORDERS_COUNT = 100
+CUSTOMER_COUNT = 500
+PRODUCT_COUNT = 230  # max: 230
+ORDERS_COUNT = 100
 MAX_ITEMS_PER_ORDER= 15
-
-TABLE_SCHEMAS = {"customers": ["customer_id", "company_name", "industry", "company_size", "country", "city", "acquisition_date", "is_active"],
-                "categories": ["category_id", "category_name"],
-                "products": ["product_id", "product_name", "category_id", "current_unit_price_cents", "current_unit_cost_cents"],
-                "orders": ["order_id", "customer_id", "order_date", "order_status"],
-                "order_items": ["order_item_id","order_id", "product_id", "order_unit_price_cents", "order_unit_cost_cents", "quantity", "discount_percent"],
-                }
 
 INDUSTRY_SECTORS = [
     "Industrial Automation",
@@ -61,7 +53,7 @@ def read_location_data():
     except Exception as error:
         raise RuntimeError("Cities and Countries could not be read from file.") from error
 
-    if not required_columns.issubset(location_data.columns) or (len(location_data) < DEFAULT_CUSTOMER_COUNT):
+    if not required_columns.issubset(location_data.columns) or (len(location_data) < CUSTOMER_COUNT):
         raise ValueError("Cities and Countries file data differs from the expected.")
     
     return location_data
@@ -76,7 +68,7 @@ def read_product_data():
     except Exception as error:
         raise RuntimeError("Products could not be read from file.") from error
 
-    if not required_columns.issubset(product_data.columns) or (len(product_data) < DEFAULT_PRODUCT_COUNT):
+    if not required_columns.issubset(product_data.columns) or (len(product_data) < PRODUCT_COUNT):
         raise ValueError("Product file data differs from the expected.")
 
     return product_data
@@ -94,20 +86,20 @@ def create_customers():
     location_data = read_location_data()
 
     # choose random location data
-    random_locations = location_data.sample(n=DEFAULT_CUSTOMER_COUNT)
+    random_locations = location_data.sample(n=CUSTOMER_COUNT)
     cities = random_locations["name"].tolist()
     countries = random_locations["country"].tolist()
     
     # create customer table
     customers = pd.DataFrame({
-        "customer_id": range(1, DEFAULT_CUSTOMER_COUNT+1),
-        "company_name": [fake.unique.company() for _ in range(DEFAULT_CUSTOMER_COUNT)],
-        "industry": [random.choice(INDUSTRY_SECTORS) for _ in range(DEFAULT_CUSTOMER_COUNT)],
-        "company_size": random.choices(COMPANY_SIZES, k=DEFAULT_CUSTOMER_COUNT),
+        "customer_id": range(1, CUSTOMER_COUNT+1),
+        "company_name": [fake.unique.company() for _ in range(CUSTOMER_COUNT)],
+        "industry": [random.choice(INDUSTRY_SECTORS) for _ in range(CUSTOMER_COUNT)],
+        "company_size": random.choices(COMPANY_SIZES, k=CUSTOMER_COUNT),
         "country": countries,
         "city": cities,
-        "acquisition_date": [fake.date_between() for _ in range(DEFAULT_CUSTOMER_COUNT)],    # defaults between -30 years and today
-        "is_active": random.choices(population=[1, 0], weights=[90, 10], k=DEFAULT_CUSTOMER_COUNT),
+        "acquisition_date": [fake.date_between() for _ in range(CUSTOMER_COUNT)],    # defaults between -30 years and today
+        "is_active": random.choices(population=[1, 0], weights=[90, 10], k=CUSTOMER_COUNT),
     })
 
     return customers
@@ -166,15 +158,15 @@ def create_orders(customers):
 
     fake = Faker("en_US")
 
-    selected_customer_ids = [random.choice(customers["customer_id"]) for _ in range(DEFAULT_ORDERS_COUNT)]
+    selected_customer_ids = [random.choice(customers["customer_id"]) for _ in range(ORDERS_COUNT)]
     acquisition_dates = dict(zip(customers["customer_id"], customers["acquisition_date"]))
 
     # create orders table
     orders = pd.DataFrame({
-        "order_id": range(1, DEFAULT_ORDERS_COUNT+1),
+        "order_id": range(1, ORDERS_COUNT+1),
         "customer_id": selected_customer_ids,
         "order_date": [fake.date_between(start_date=acquisition_dates[customer_id], end_date="today") for customer_id in selected_customer_ids],
-        "order_status": random.choices(ORDER_STATUS, weights=[70, 10, 20], k=DEFAULT_ORDERS_COUNT),
+        "order_status": random.choices(ORDER_STATUS, weights=[70, 10, 20], k=ORDERS_COUNT),
     })
 
     return orders
