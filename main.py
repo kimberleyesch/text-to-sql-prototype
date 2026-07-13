@@ -39,7 +39,8 @@ def main():
         if USE_RAG:
             rag_results  = retrieve_relevant_documents(question, collection, client)
             rag_context = build_rag_context(rag_results)
-            prompt = build_rag_prompt(question, schema, rag_context)        
+            prompt = build_rag_prompt(question, schema, rag_context)
+            question_id += "_RAG"
             print("RAG context: ")
             print(rag_context)
             print("\n\n")
