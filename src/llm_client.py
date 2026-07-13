@@ -29,11 +29,8 @@ def clean_sql_response(response_query):
 
     return sql_query
 
-def generate_sql(prompt):
+def generate_sql(client, prompt):
     """Send prompt to LLM and return the generated SQL query"""
-
-    GEMINI_API_KEY = get_api()
-    client = genai.Client(api_key=GEMINI_API_KEY)
 
     interaction = client.interactions.create(
         model="gemini-3.5-flash",
