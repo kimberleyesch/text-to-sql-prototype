@@ -92,3 +92,18 @@ def retrieve_relevant_documents(user_question, collection, client):
     )
 
     return rag_results
+
+def build_rag_context(rag_results):
+    documents = rag_results["documents"][0]
+    metadatas = rag_results["metadatas"][0]
+
+    rag_context = []
+
+    for document, metadata in zip(documents, metadatas):
+        
+        rag_context.append(f"source: {metadata["source"]}")
+        rag_context.append(document)
+
+        rag_context.append("\n\n---\n\n")
+
+    return rag_context
