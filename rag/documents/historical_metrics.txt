@@ -1,12 +1,35 @@
 Title: Historical Revenue and Profit Calculation Rules
 
 Content:
-Historical calculations use the selling price and unit costs at the time an order was placed. Current product prices and costs are not used.
+Historical calculations use the unit selling price and unit cost at the time an order was placed. Current product prices and current product costs are not used.
 
-Gross revenue is calculated by multiplying the ordered quantity by the historical unit selling price before discount.
-Net revenue is calculated by applying the recorded discount to the historical unit selling price and multiplying the result by the ordered quantity.
-Cost of Goods Sold (COGS) is calculated by multiplying the ordered quantity by the historical unit cost.
-Gross profit is calculated as net revenue minus Cost of Goods Sold.
-Gross profit margin is calculated as gross profit devided by net revenue, multiplied by 100.
+Gross revenue is calculated before discount:
+Gross revenue = ordered quantity * historical unit selling price 
+
+The discount is stored in discount_percent as a percentage between 0 and 100.
+The discounted unit selling price is calculated as:
+Discounted unit selling price = historical unit selling price * (1- discount percent / 100.0)
+
+Net revenue is calculated as:
+Net revenue = ordered quantity * discounted unit selling price 
+
+Cost of Goods Sold (COGS) is calculated as:
+COGS = ordered quantity * historical unit cost
+
+Gross profit is calculated as:
+Gross profit = net revenue - COGS
+
+Gross profit margin is calculated as:
+Gross profit margin = gross profit / net revenue * 100
 
 If net revenue is zero, the gross profit margin is undefined.
+
+Average order value is calculated as:
+Average order value = total net Revenue from completed orders / number of completed orders
+
+Each completed order is counted once.
+
+An order results in a loss if ist total gross profit is below zero.
+
+The loss amount is calculated as:
+Loss amount = absolute value of the order's negative total gross profit

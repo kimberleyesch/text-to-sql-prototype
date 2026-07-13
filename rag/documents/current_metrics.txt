@@ -9,4 +9,4 @@ The current unit cost is the current selling cost of a product.
 The current gross profit per unit is calculated as the current unit selling price minus the current unit cost.
 The current gross profit margin is calculated as current gross profit per unit divided by the current unit selling price, multiplied by 100.
 
-If the current unit price is zero, the Current Gross Profit Margin is undefined.
+If the current unit price is zero, the current gross profit margin is undefined.

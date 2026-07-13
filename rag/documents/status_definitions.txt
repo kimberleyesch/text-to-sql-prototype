@@ -1,0 +1,12 @@
+Title: Customer and Order Status
+
+Content:
+A customer is classified as active if the value of is_active is 1.
+A customer is classified as inactive if the value of is_active is 0.
+
+An open order is an order with the status pending.
+A successful purchase is an order with the status completed.
+
+Unless another order status is explicitly stated, the terms "purchased products" and "sold products" refer to order items belonging to completed orders.
+
+Cancelled orders are not considered successful purchases.

@@ -1,4 +1,0 @@
-Title: High-Value Product Definition
-
-Content:
-A product is classified as high-value if its current unit selling price is at least 700€.
