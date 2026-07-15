@@ -12,9 +12,7 @@ venv/
 # chromadb
 *.sqlite3
 
-# test questions and results
-*.csv
-*.xlsx
+# test results
 results/
 
 # binaries
