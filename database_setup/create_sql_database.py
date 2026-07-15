@@ -1,11 +1,7 @@
 import sqlite3
-import test_data_generator
 import pandas as pd
 from pathlib import Path
-
-
-# -----------------------------------------------------------------------------------------
-# Constants
+from test_data_generator import create_test_data
 
 DATABASE_PATH = Path(__file__).resolve().parent / "business.db"
 
@@ -16,7 +12,6 @@ INSERT_ORDER = [
     "orders",
     "order_items",
 ]
-
 
 CREATE_TABLES_SQL = """
     CREATE TABLE customers (
@@ -86,11 +81,11 @@ CREATE_TABLES_SQL = """
         FOREIGN KEY (product_id)
             REFERENCES products(product_id)
     );
-
-
 """
 
+
 def get_available_database_path(base_path):
+    """Returns an available file path by adding a number if the path already exists."""
     if not base_path.exists():
         return base_path
     
@@ -104,12 +99,12 @@ def get_available_database_path(base_path):
         
         number += 1
 
-
 def create_database_tables(connection):
+    """Creates the database tables using predefined schema."""
     connection.executescript(CREATE_TABLES_SQL)
 
-
-def prepare_dataframe(dataframe):
+def formate_date_columns(dataframe):
+    """Returns a copy of the dataframe with date columns formated as YYYY-MM-DD-"""
     dataframe = dataframe.copy()
 
     date_columns = ["acquisition_date", "order_date"]
@@ -120,12 +115,12 @@ def prepare_dataframe(dataframe):
 
     return dataframe
 
-
 def insert_test_data(connection):
-    test_data = test_data_generator.create_test_data()
+    """Generates and inserts test data into all database tables."""
+    test_data = create_test_data()
 
     for table_name in INSERT_ORDER:
-        dataframe = prepare_dataframe(test_data[table_name])
+        dataframe = formate_date_columns(test_data[table_name])
 
         dataframe.to_sql(
             name=table_name,
@@ -134,10 +129,11 @@ def insert_test_data(connection):
             index=False
         )
 
-        print(f"{len(dataframe)} datarows were successfully transfered to {table_name}.")
-
+        print(f"{len(dataframe)} data rows were successfully transfered to {table_name}.")
 
 def main():
+    """Creates the SQLite test database."""
+
     database_path = get_available_database_path(DATABASE_PATH)
 
     try:

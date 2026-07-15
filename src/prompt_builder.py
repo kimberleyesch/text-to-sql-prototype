@@ -1,5 +1,5 @@
 def build_baseline_prompt(question, schema):
-    """Construct a prompt for generating a SQLite query."""
+    """Construct a prompt for generating a SQLite query without RAG."""
     
     prompt = f"""
 You are a text-to-SQL system.
@@ -25,7 +25,7 @@ Instructions:
     return prompt
 
 def build_rag_prompt(question, schema, rag_context):
-    """Construct a prompt for generating a SQLite query."""
+    """Construct a prompt for generating a SQLite query using RAG."""
     
     prompt = f"""
 You are a text-to-SQL system.

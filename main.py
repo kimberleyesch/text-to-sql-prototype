@@ -5,6 +5,7 @@ from src.database_access import get_schema, execute_query
 from src.prompt_builder import build_baseline_prompt, build_rag_prompt
 from src.llm_client import generate_sql, get_api
 from evaluation.evaluation_data import get_questions, save_result
+from evaluation.evaluation_data import RESULTS_PATH
 from rag.rag_pipeline import save_embeddings_in_db, create_embedding, retrieve_relevant_documents, build_rag_context
 
 CHROMADB_PATH = Path(__file__).resolve().parent / "rag" / "chromaDB"
@@ -25,7 +26,6 @@ def main():
     schema = get_schema()
     questions, question_ids = get_questions()
 
-    # rebuild collection if RAG-documents have changed
     if REBUILD_RAG_COLLECTION:
         embedded_documents = create_embedding(client)
         collection = save_embeddings_in_db(embedded_documents)
@@ -41,9 +41,6 @@ def main():
             rag_context = build_rag_context(rag_results)
             prompt = build_rag_prompt(question, schema, rag_context)
             question_id += "_RAG"
-            print("RAG context: ")
-            print(rag_context)
-            print("\n\n")
         else:
             prompt = build_baseline_prompt(question, schema)
 
@@ -51,17 +48,8 @@ def main():
         column_names, results = execute_query(sql_query)
         save_result(question_id, column_names, results, sql_query)
         
-        print("\n")
-        print("-"*60)
-        print(f"Question {question_id}: {question}\n")
-        print(f"Generated SQL-Query: {sql_query}")
-        print("\n")
-        print("Result:")
-        print(" | ".join(column_names))
-        print("-"*40)
-
-        for row in results:
-            print(" | ".join(map(str, row)))
+        print("\nTest run completed successfully.")
+        print(f"Results have been saved in {RESULTS_PATH}")
 
 if __name__ == "__main__":
     main()

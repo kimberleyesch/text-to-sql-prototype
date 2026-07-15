@@ -26,6 +26,8 @@ def load_txt_documents(folder_path):
     return documents
 
 def create_embedding(client):
+    """Generates vector embeddings from text files."""
+
     documents = load_txt_documents(RAG_DOKUS_DIR)
     embedded_documents = []
 
@@ -47,6 +49,8 @@ def create_embedding(client):
     return embedded_documents
 
 def save_embeddings_in_db(embedded_documents):
+    """Saves the document embeddings to ChromaDB."""
+
     chroma_client = chromadb.PersistentClient(path=str(CHROMADB_PATH))
 
     collection = chroma_client.get_or_create_collection(
@@ -77,6 +81,7 @@ def save_embeddings_in_db(embedded_documents):
     return collection
 
 def retrieve_relevant_documents(user_question, collection, client):
+    """Embeds the user question and retrieves the most relevant documents from ChromaDB."""
     result = client.models.embed_content(
         model="gemini-embedding-2",
         contents=user_question,
@@ -94,6 +99,7 @@ def retrieve_relevant_documents(user_question, collection, client):
     return rag_results
 
 def build_rag_context(rag_results):
+    """Builds a formatted context string from the retrieved documents."""
     documents = rag_results["documents"][0]
     metadatas = rag_results["metadatas"][0]
 
