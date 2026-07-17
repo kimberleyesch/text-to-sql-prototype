@@ -48,15 +48,12 @@ def get_schema():
 
 
 def execute_query(sql_query):
-    """Execute a SELECT query and return all result rows."""
-
-    if not sql_query.strip().lower().startswith("select"):
-        raise ValueError("Only SELECT queries are allowed.")
-        #TODO add question-number
+    """Execute a read-only SQL query and return all result rows."""
     
     connection = get_connection()
 
     try:
+        connection.execute("PRAGMA query_only = ON")
         cursor = connection.cursor()
         cursor.execute(sql_query.strip())
 
