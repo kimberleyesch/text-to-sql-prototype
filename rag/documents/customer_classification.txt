@@ -8,6 +8,4 @@ A customer is classified a VIP-customer if at least one of the following conditi
 -	The customer has placed at least five completed orders.
 -	The customer has generated more than 2000 € in net revenue from completed orders.
 
-Prioritized customers include all VIP-customers as well as customers with following customer IDs: 1, 42, 66, 100 and 404
-
 The Growth Market Segment includes customers located in Germany, France, United States and China.
