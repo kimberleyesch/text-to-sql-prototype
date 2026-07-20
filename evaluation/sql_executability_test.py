@@ -8,8 +8,10 @@ sys.path.insert(0, str(PROJ_ROOT))
 from src.database_access import get_connection
 
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
-RESULTS_WITHOUT_RAG_DIR = RESULTS_DIR / "without_rag"
-RESULTS_WITH_RAG_DIR = RESULTS_DIR / "with_rag"
+STANDARD_BASELINE_DIR = RESULTS_DIR / "baseline"
+STANDARD_RAG_DIR = RESULTS_DIR / "rag"
+EXTENDED_BASELINE_DIR = RESULTS_DIR / "extended_baseline"
+EXTENDED_RAG_DIR = RESULTS_DIR / "extended_rag"
 
 
 def read_result_data(file_name):
@@ -35,22 +37,22 @@ def check_executability():
 
     executability_results = {}
     executability_failed = []
-    result_directories = [RESULTS_WITHOUT_RAG_DIR, RESULTS_WITH_RAG_DIR]
+    result_directories = [
+                        #   STANDARD_BASELINE_DIR, STANDARD_RAG_DIR, 
+                          EXTENDED_BASELINE_DIR, EXTENDED_RAG_DIR]
 
     database_connection = get_connection()
-
-    cursor = database_connection.cursor()
     
     try:
+        database_connection.execute("PRAGMA query_only = ON")
+        cursor = database_connection.cursor()
+
         for result_directory in result_directories:
 
             for file_path in result_directory.glob("*.csv"):
 
                 file_data = read_result_data(file_path)
-                sql_query = file_data["Generated SQL-Query"][0]
-
-                if not sql_query.strip().lower().startswith("select"):
-                    raise ValueError(f"Error with file {file_path.name}: Only SELECT queries are allowed.")
+                sql_query = file_data["Generated SQL-Query"].iloc[0]
 
                 try:
                     cursor.execute(sql_query.strip())

@@ -2,15 +2,21 @@ import pandas as pd
 from pathlib import Path
 
 EVALUATION_DIR = Path(__file__).resolve().parent
-QUESTIONS_PATH = EVALUATION_DIR / "test_questions.xlsx"
-RESULTS_PATH = EVALUATION_DIR / "results"
-RAG_PATH = RESULTS_PATH / "with_rag"
-WITHOUT_RAG_PATH = RESULTS_PATH / "without_rag"
+
+# Question path
+STANDARD_QUESTIONS_PATH = EVALUATION_DIR / "test_questions.xlsx"
+EXTENDED_QUESTIONS_PATH = EVALUATION_DIR / "test_questions_extended.xlsx"
+# Results path
+RESULTS_DIR = EVALUATION_DIR / "results"
+STANDARD_BASELINE_DIR = RESULTS_DIR / "baseline"
+STANDARD_RAG_DIR = RESULTS_DIR / "rag"
+EXTENDED_BASELINE_DIR = RESULTS_DIR / "extended_baseline"
+EXTENDED_RAG_DIR = RESULTS_DIR / "extended_rag"
 
 
-def get_questions():
+def get_questions(question_path):
     """Read test question and ID from Excel file."""
-    question_data = pd.read_excel(QUESTIONS_PATH, dtype={"ID": str})
+    question_data = pd.read_excel(question_path, dtype={"ID": str})
 
     required_columns = {"ID", "Test Questions"}
 
@@ -22,12 +28,10 @@ def get_questions():
 
     return questions, question_ids
 
-def save_result(question_id, column_names, results, sql_query):
-    """Save the query result in new CSV file"""
+def save_result(question_id, column_names, results, sql_query, target_dir):
+    """Save the query result in a new CSV file"""
 
-    RESULTS_PATH.mkdir(exist_ok=True)
-    RAG_PATH.mkdir(exist_ok=True)
-    WITHOUT_RAG_PATH.mkdir(exist_ok=True)
+    target_dir.mkdir(parents=True, exist_ok=True)
 
     df = pd.DataFrame(
         results,
@@ -36,27 +40,41 @@ def save_result(question_id, column_names, results, sql_query):
     df.insert(0, "Generated SQL-Query", "")
     df.loc[0, "Generated SQL-Query"] = sql_query.replace("\n", " ")
 
-    path_name = get_next_result_path(question_id)
+    result_path = get_next_result_path(question_id, target_dir)
 
-    df.to_csv(path_name,
+    df.to_csv(result_path,
               index=False,
               sep=";",
               encoding="utf-8")
 
-def get_next_result_path(question_id):
+def get_next_result_path(question_id, dir_name):
     """Return the next available file path name for the question."""
 
     counter = 1
-
-    if "rag" in question_id.lower():
-        target_dir = RAG_PATH 
-    else:
-        target_dir = WITHOUT_RAG_PATH
-
-    path_name = (target_dir /  f"{question_id}_result_{counter}.csv")
+    results_path = (dir_name /  f"{question_id}_result_{counter}.csv")
     
-    while path_name.exists():
+    while results_path.exists():
         counter += 1
-        path_name = target_dir / f"{question_id}_result_{counter}.csv"
+        results_path = dir_name / f"{question_id}_result_{counter}.csv"
         
-    return path_name
+    return results_path
+
+def get_results_dir(use_rag, use_extended_questions):
+    if use_rag and use_extended_questions:
+        results_dir = EXTENDED_RAG_DIR
+    elif use_rag and not use_extended_questions:
+        results_dir = STANDARD_RAG_DIR
+    elif not use_rag and use_extended_questions:
+        results_dir = EXTENDED_BASELINE_DIR
+    elif not use_rag and not use_extended_questions:
+        results_dir = STANDARD_BASELINE_DIR
+
+    return results_dir
+
+def get_question_path(use_extended_questions):
+    if use_extended_questions:
+        question_path = EXTENDED_QUESTIONS_PATH
+    else:
+        question_path = STANDARD_QUESTIONS_PATH
+
+    return question_path
