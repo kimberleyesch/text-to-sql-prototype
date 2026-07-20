@@ -46,6 +46,24 @@ def save_result(question_id, column_names, results, sql_query, target_dir):
               index=False,
               sep=";",
               encoding="utf-8")
+    
+def save_executability_results(executability_ids, executability_results, error_messages, target_dir):
+    """Save the executability results in a new CSV file"""
+
+    target_dir.mkdir(parents=True, exist_ok=True)
+
+    df = pd.DataFrame({
+        "Question ID": executability_ids,
+        "Executable": executability_results,
+        "Error Message": error_messages
+    })
+
+    target_path = target_dir / "Executability_Evaluation.csv"
+
+    df.to_csv(target_path,
+              index=False,
+              sep=";",
+              encoding="utf-8")
 
 def get_next_result_path(question_id, dir_name):
     """Return the next available file path name for the question."""
