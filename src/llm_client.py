@@ -3,20 +3,24 @@ from google import genai
 from dotenv import load_dotenv
 from pathlib import Path
 
+PROJ_ROOT = Path(__file__).resolve().parent.parent
+DOTENV_FILE = PROJ_ROOT / ".env"
+
+
 def get_api():
     """GET API Key from .env"""
-    PROJ_ROOT = Path(__file__).resolve().parent.parent
-    dotenv_path = PROJ_ROOT.resolve()
-    load_dotenv(dotenv_path=dotenv_path)
-    GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
-    if not GEMINI_API_KEY:
+    load_dotenv(dotenv_path=DOTENV_FILE)
+    gemini_api_key = os.getenv('GEMINI_API_KEY')
+
+    if not gemini_api_key:
         raise ValueError("Gemini API Key was not found in the environment.")
     
-    return GEMINI_API_KEY
+    return gemini_api_key
 
 def clean_sql_response(response_query):
     """Remove Markdown fences form LLM response."""
+    
     sql_query = response_query.strip()
 
     sql_query = (
