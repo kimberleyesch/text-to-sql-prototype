@@ -28,7 +28,7 @@ def get_questions(question_path):
 
     return questions, question_ids
 
-def save_result(question_id, column_names, results, sql_query, target_dir):
+def save_result(question_id, column_names, results, sql_query, target_dir, rag_results=None):
     """Save the query result in a new CSV file"""
 
     target_dir.mkdir(parents=True, exist_ok=True)
@@ -39,6 +39,12 @@ def save_result(question_id, column_names, results, sql_query, target_dir):
     )
     df.insert(0, "Generated SQL-Query", "")
     df.loc[0, "Generated SQL-Query"] = sql_query.replace("\n", " ")
+
+    if rag_results is not None:
+        df.insert(1, "RAG Document Sources", "")
+
+        for i, source in enumerate(rag_results["metadatas"][0]):
+            df.loc[i, "RAG Document Sources"] = source["source"]
 
     result_path = get_next_result_path(question_id, target_dir)
 

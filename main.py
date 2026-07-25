@@ -9,10 +9,10 @@ from rag.rag_pipeline import save_embeddings_in_db, create_embedding, retrieve_r
 
 CHROMADB_PATH = Path(__file__).resolve().parent / "rag" / "chromaDB"
 
-USE_RAG = True
+# Configurations:
+USE_RAG = False
 REBUILD_RAG_COLLECTION = False
-
-USE_EXTENDED_QUESTIONS = True
+USE_EXTENDED_QUESTIONS = False
 
 def main():
     """Run complete Text-to-SQL workflow
@@ -48,7 +48,11 @@ def main():
             rag_results  = retrieve_relevant_documents(question, collection, client)
             rag_context = build_rag_context(rag_results)
             prompt = build_rag_prompt(question, schema, rag_context)
-            res_question_id = f"{question_id}_RAG"
+            question_id += "_RAG"
+
+            print("\nRAG context: ")
+            print(rag_context)
+            print("\n\n")
         else:
             prompt = build_baseline_prompt(question, schema)
 
@@ -65,7 +69,23 @@ def main():
             executability_results.append(False)
             error_messages.append(str(e))
 
-        save_result(res_question_id, column_names, results, sql_query, results_dir)    
+        if USE_RAG:
+            save_result(question_id, column_names, results, sql_query, results_dir, rag_results)
+        else:
+            save_result(question_id, column_names, results, sql_query, results_dir)
+
+
+        print("\n")
+        print("-"*60)
+        print(f"Question {question_id}: {question}\n")
+        print(f"Generated SQL-Query: {sql_query}")
+        print("\n")
+        print("Result:")
+        print(" | ".join(column_names))
+        print("-"*40)
+
+        for row in results:
+            print(" | ".join(map(str, row))) 
     
     save_executability_results(executability_ids, executability_results, error_messages, results_dir)
     print("\nTest run completed successfully.")

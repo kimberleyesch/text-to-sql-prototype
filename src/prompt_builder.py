@@ -18,7 +18,7 @@ Instructions:
 - Select only the columns required to answer the question.
 - Prefer human-readable descriptive column for identifying entities. 
 - Include ID columns only when explicitly requested or necessary.
-- Use SELECT * only when  user explicitly requests all information, all details or complete records.
+- Use SELECT * only when the user explicitly requests all information, all details or complete records.
 - Round final monetary values that are expressed in euros and percentage values to two decimal places.
 """
 
@@ -47,7 +47,7 @@ Instructions:
 - Select only the columns required to answer the question.
 - Prefer human-readable descriptive column for identifying entities. 
 - Include ID columns only when explicitly requested or necessary.
-- Use SELECT * only when  user explicitly requests all information, all details or complete records.
+- Use SELECT * only when the user explicitly requests all information, all details or complete records.
 - Round final monetary values that are expressed in euros and percentage values to two decimal places.
 """
 
