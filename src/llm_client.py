@@ -34,15 +34,32 @@ def clean_sql_response(response_query):
     return sql_query
 
 def generate_sql(client, prompt):
-    """Send prompt to LLM and return the generated SQL query"""
+    """Send prompt to LLM and return the generated SQL query and thinking summary"""
 
     interaction = client.interactions.create(
         model="gemini-3.5-flash",
-        input=prompt
+        input=prompt,
+        generation_config={
+            "thinking_summaries": "auto"
+        }
     )
     
     sql_response = interaction.output_text
-
     sql_query = clean_sql_response(sql_response)
+
+    for step in interaction.steps:
+        if step.type == "thought":
+            print("Thought summary:")
+            if step.summary:
+                for content_block in step.summary:
+                    if content_block.type == "text":
+                        print(content_block.text)
+            print()
+        elif step.type == "model_output":
+            for content_block in step.content:
+                if content_block.type == "text":
+                    print("Answer:")
+                    print(content_block.text)
+                    print()
 
     return sql_query
