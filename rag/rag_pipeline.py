@@ -89,14 +89,27 @@ def retrieve_relevant_documents(user_question, collection, client):
     )
 
     query_embedding = result.embeddings[0].values
+
+    number_of_documents = collection.count()
     
     rag_results = collection.query(
+        query_embeddings=[query_embedding],
+        n_results=number_of_documents,
+        include=["documents", "metadatas", "distances"]
+    )
+
+    top_three = collection.query(
         query_embeddings=[query_embedding],
         n_results=3,
         include=["documents", "metadatas", "distances"]
     )
 
-    return rag_results
+    for i in range(number_of_documents):
+        print(f"Document {i+1}: {rag_results["metadatas"][0][i]["source"]}")
+        print(f"Distance {i+1}: {rag_results["distances"][0][i]}\n")
+    print(f"Chosen documents: {top_three["metadatas"][0]}")
+
+    return top_three
 
 def build_rag_context(rag_results):
     """Builds a formatted context string from the retrieved documents."""
