@@ -95,7 +95,7 @@ def retrieve_relevant_documents(user_question, collection, client):
     rag_results = collection.query(
         query_embeddings=[query_embedding],
         n_results=number_of_documents,
-        include=["documents", "metadatas", "distances"]
+        include=["metadatas", "distances"]
     )
 
     top_three = collection.query(

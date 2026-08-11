@@ -58,10 +58,20 @@ def save_executability_results(executability_ids, executability_results, error_m
 
     target_dir.mkdir(parents=True, exist_ok=True)
 
+    number_results = len(executability_results)
+
+    n=0
+    for i in range(number_results):
+        if executability_results[i] == False:
+            n+1
+
+    executability_rate = (number_results - n) / number_results * 100
+
     df = pd.DataFrame({
         "Question ID": executability_ids,
         "Executable": executability_results,
-        "Error Message": error_messages
+        "Error Message": error_messages,
+        "Executability rate": [executability_rate] + [""] * (number_results - 1)
     })
 
     target_path = target_dir / "Executability_Evaluation.csv"
