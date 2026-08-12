@@ -10,9 +10,9 @@ from rag.rag_pipeline import save_embeddings_in_db, create_embedding, retrieve_r
 CHROMADB_PATH = Path(__file__).resolve().parent / "rag" / "chromaDB"
 
 # Configurations:
-USE_RAG = False
+USE_RAG = True
 REBUILD_RAG_COLLECTION = False
-USE_EXTENDED_QUESTIONS = False
+USE_EXTENDED_QUESTIONS = True
 
 def main():
     """Run complete Text-to-SQL workflow
@@ -49,10 +49,6 @@ def main():
             rag_context = build_rag_context(rag_results)
             prompt = build_rag_prompt(question, schema, rag_context)
             question_id += "_RAG"
-
-            print("\nRAG context: ")
-            print(rag_context)
-            print("\n\n")
         else:
             prompt = build_baseline_prompt(question, schema)
 
@@ -75,21 +71,22 @@ def main():
             save_result(question_id, column_names, results, sql_query, results_dir)
 
 
-        print("\n")
-        print("-"*60)
-        print(f"Question {question_id}: {question}\n")
-        print(f"Generated SQL-Query: {sql_query}")
-        print("\n")
-        print("Result:")
-        print(" | ".join(column_names))
-        print("-"*40)
+        # print("\n")
+        # print("-"*60)
+        # print(f"Question {question_id}: {question}\n")
+        # print(f"Generated SQL-Query: {sql_query}")
+        # print("\n")
+        # print("Result:")
+        # print(" | ".join(column_names))
+        # print("-"*40)
 
-        for row in results:
-            print(" | ".join(map(str, row))) 
+        # for row in results:
+        #     print(" | ".join(map(str, row)))
     
-    save_executability_results(executability_ids, executability_results, error_messages, results_dir)
+    executability_rate = save_executability_results(executability_ids, executability_results, error_messages, results_dir)
     print("\nTest run completed successfully.")
-    print(f"Results have been saved in {results_dir}")
+    print(f"SQL executability rate: {executability_rate} %")
+    print(f"Results have been saved in:\n{results_dir}")
 
 if __name__ == "__main__":
     main()

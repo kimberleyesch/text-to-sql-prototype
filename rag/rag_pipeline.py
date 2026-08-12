@@ -98,16 +98,20 @@ def retrieve_relevant_documents(user_question, collection, client):
         include=["metadatas", "distances"]
     )
 
+    for i in range(number_of_documents):
+        print(f"Document {i+1}: {rag_results['metadatas'][0][i]['source']}")
+        print(f"Distance {i+1}: {rag_results['distances'][0][i]}\n")
+
     top_three = collection.query(
         query_embeddings=[query_embedding],
         n_results=3,
         include=["documents", "metadatas", "distances"]
     )
-
-    for i in range(number_of_documents):
-        print(f"Document {i+1}: {rag_results["metadatas"][0][i]["source"]}")
-        print(f"Distance {i+1}: {rag_results["distances"][0][i]}\n")
-    print(f"Chosen documents: {top_three["metadatas"][0]}")
+    
+    print("Chosen documents: ")
+    for metadata in top_three["metadatas"][0]:
+        print(metadata["source"])
+    print("\n\n")
 
     return top_three
 

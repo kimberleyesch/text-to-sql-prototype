@@ -81,6 +81,8 @@ def save_executability_results(executability_ids, executability_results, error_m
               sep=";",
               encoding="utf-8")
 
+    return executability_rate
+
 def get_next_result_path(question_id, dir_name):
     """Return the next available file path name for the question."""
 
