@@ -91,7 +91,16 @@ def save_thinking_summary(question_id, thinking_summary, dir_name):
 
     with open(file_path, "a") as f:
         f.write(f"{question_id}:\n")
-        f.write(f"{thinking_summary}\n\n")   
+        f.write(f"{thinking_summary}\n\n")
+
+def save_rag_distances(question_id, rag_distances, dir_name):
+    """Saves document distances of all documents into text file."""
+
+    file_path = Path(dir_name) / "rag_distances.txt"
+    
+    with open(file_path, "a") as f:
+        f.write(f"{question_id}:\n")
+        f.write(f"{rag_distances}\n\n")
 
 def get_next_result_path(question_id, dir_name):
     """Return the next available file path name for the question."""

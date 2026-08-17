@@ -98,9 +98,11 @@ def retrieve_relevant_documents(user_question, collection, client):
         include=["metadatas", "distances"]
     )
 
+    rag_distances = ""
+
     for i in range(number_of_documents):
-        print(f"Document {i+1}: {rag_results['metadatas'][0][i]['source']}")
-        print(f"Distance {i+1}: {rag_results['distances'][0][i]}\n")
+        rag_distances += f"Document {i+1}: {rag_results['metadatas'][0][i]['source']}"
+        rag_distances += f"Distance {i+1}: {rag_results['distances'][0][i]}\n"
 
     top_three = collection.query(
         query_embeddings=[query_embedding],
@@ -113,7 +115,7 @@ def retrieve_relevant_documents(user_question, collection, client):
         print(metadata["source"])
     print("\n\n")
 
-    return top_three
+    return top_three, rag_distances
 
 def build_rag_context(rag_results):
     """Builds a formatted context string from the retrieved documents."""

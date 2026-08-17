@@ -4,7 +4,7 @@ from pathlib import Path
 from src.database_access import get_schema, execute_query
 from src.prompt_builder import build_baseline_prompt, build_rag_prompt
 from src.llm_client import generate_sql, get_api
-from evaluation.evaluation_data import get_questions, save_result, save_executability_results, save_thinking_summary, get_results_dir, get_question_path
+from evaluation.evaluation_data import get_questions, save_result, save_executability_results, save_thinking_summary, save_rag_distances, get_results_dir, get_question_path
 from rag.rag_pipeline import save_embeddings_in_db, create_embedding, retrieve_relevant_documents, build_rag_context
 
 CHROMADB_PATH = Path(__file__).resolve().parent / "rag" / "chromaDB"
@@ -45,7 +45,7 @@ def main():
     for question_id, question in zip(question_ids, questions):
 
         if USE_RAG:
-            rag_results  = retrieve_relevant_documents(question, collection, client)
+            rag_results, rag_distances  = retrieve_relevant_documents(question, collection, client)
             rag_context = build_rag_context(rag_results)
             prompt = build_rag_prompt(question, schema, rag_context)
             question_id += "_RAG"
@@ -71,6 +71,7 @@ def main():
             save_result(question_id, column_names, results, sql_query, results_dir)
 
         save_thinking_summary(question_id, thinking_summary, results_dir)
+        save_rag_distances(question_id, rag_distances, results_dir)
 
         # print("\n")
         # print("-"*60)
