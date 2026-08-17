@@ -4,7 +4,7 @@ from pathlib import Path
 from src.database_access import get_schema, execute_query
 from src.prompt_builder import build_baseline_prompt, build_rag_prompt
 from src.llm_client import generate_sql, get_api
-from evaluation.evaluation_data import get_questions, save_result, save_executability_results, get_results_dir, get_question_path
+from evaluation.evaluation_data import get_questions, save_result, save_executability_results, save_thinking_summary, get_results_dir, get_question_path
 from rag.rag_pipeline import save_embeddings_in_db, create_embedding, retrieve_relevant_documents, build_rag_context
 
 CHROMADB_PATH = Path(__file__).resolve().parent / "rag" / "chromaDB"
@@ -52,7 +52,7 @@ def main():
         else:
             prompt = build_baseline_prompt(question, schema)
 
-        sql_query = generate_sql(client, prompt)
+        sql_query, thinking_summary = generate_sql(client, prompt)
         executability_ids.append(question_id)
         
         try:
@@ -70,6 +70,7 @@ def main():
         else:
             save_result(question_id, column_names, results, sql_query, results_dir)
 
+        save_thinking_summary(question_id, thinking_summary, results_dir)
 
         # print("\n")
         # print("-"*60)

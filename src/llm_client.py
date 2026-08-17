@@ -47,19 +47,23 @@ def generate_sql(client, prompt):
     sql_response = interaction.output_text
     sql_query = clean_sql_response(sql_response)
 
+    thinking_summary = []
+
     for step in interaction.steps:
         if step.type == "thought":
-            print("Thought summary:")
+            thinking_summary.append("Thought summary:")
             if step.summary:
                 for content_block in step.summary:
                     if content_block.type == "text":
-                        print(content_block.text)
-            print()
+                        thinking_summary.append(content_block.text)
+            thinking_summary.append("")
         elif step.type == "model_output":
             for content_block in step.content:
                 if content_block.type == "text":
-                    print("Answer:")
-                    print(content_block.text)
-                    print()
+                    thinking_summary.append("Answer:")
+                    thinking_summary.append(content_block.text)
+                    thinking_summary.append("")
 
-    return sql_query
+    thinking_summary = "\n".join(thinking_summary)
+
+    return sql_query, thinking_summary

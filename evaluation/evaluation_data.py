@@ -84,6 +84,15 @@ def save_executability_results(executability_ids, executability_results, error_m
 
     return executability_rate
 
+def save_thinking_summary(question_id, thinking_summary, dir_name):
+    """Saves thinking summary of the LLM into text file."""
+
+    file_path = Path(dir_name) / "thinking_summary.txt"
+
+    with open(file_path, "a") as f:
+        f.write(f"{question_id}:\n")
+        f.write(f"{thinking_summary}\n\n")   
+
 def get_next_result_path(question_id, dir_name):
     """Return the next available file path name for the question."""
 
