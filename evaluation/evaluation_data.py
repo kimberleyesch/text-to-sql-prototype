@@ -16,6 +16,7 @@ EXTENDED_RAG_DIR = RESULTS_DIR / "extended_rag"
 
 def get_questions(question_path):
     """Read test question and ID from Excel file."""
+
     question_data = pd.read_excel(question_path, dtype={"ID": str})
 
     required_columns = {"ID", "Test Questions"}
@@ -95,19 +96,35 @@ def get_next_result_path(question_id, dir_name):
         
     return results_path
 
+def get_next_dir_path(dir_name):
+    """Return the next available directory path."""
+
+    results_dir = dir_name
+    counter = 1
+
+    while results_dir.exists():
+        results_dir = Path(f"{dir_name}_{counter}")
+        counter += 1
+
+    return Path(results_dir)
+
 def get_results_dir(use_rag, use_extended_questions):
+    """Return the directory name in which results should be saved."""
+
     if use_rag and use_extended_questions:
-        results_dir = EXTENDED_RAG_DIR
+        results_dir = get_next_dir_path(EXTENDED_RAG_DIR)
     elif use_rag and not use_extended_questions:
-        results_dir = STANDARD_RAG_DIR
+        results_dir = get_next_dir_path(STANDARD_RAG_DIR)
     elif not use_rag and use_extended_questions:
-        results_dir = EXTENDED_BASELINE_DIR
+        results_dir = get_next_dir_path(EXTENDED_BASELINE_DIR)
     elif not use_rag and not use_extended_questions:
-        results_dir = STANDARD_BASELINE_DIR
+        results_dir = get_next_dir_path(STANDARD_BASELINE_DIR)
 
     return results_dir
 
 def get_question_path(use_extended_questions):
+    """Returns question path."""
+
     if use_extended_questions:
         question_path = EXTENDED_QUESTIONS_PATH
     else:
