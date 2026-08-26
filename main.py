@@ -10,9 +10,9 @@ from rag.rag_pipeline import save_embeddings_in_db, create_embedding, retrieve_r
 CHROMADB_PATH = Path(__file__).resolve().parent / "rag" / "chromaDB"
 
 # Configurations:
-USE_RAG = True
+USE_RAG = False
 REBUILD_RAG_COLLECTION = False
-USE_EXTENDED_QUESTIONS = True
+USE_EXTENDED_QUESTIONS = False
 
 def main():
     """Run complete Text-to-SQL workflow
@@ -67,11 +67,11 @@ def main():
 
         if USE_RAG:
             save_result(question_id, column_names, results, sql_query, results_dir, rag_results)
+            save_rag_distances(question_id, rag_distances, results_dir)
         else:
             save_result(question_id, column_names, results, sql_query, results_dir)
 
         save_thinking_summary(question_id, thinking_summary, results_dir)
-        save_rag_distances(question_id, rag_distances, results_dir)
 
         # print("\n")
         # print("-"*60)
